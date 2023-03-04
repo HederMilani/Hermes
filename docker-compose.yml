@@ -1,0 +1,19 @@
+version: '0.1'
+
+services:
+  apolo:
+    image: rabbitmq:3-management
+    container_name: Apolo 
+    #restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ-DEFAULT_USER=admin
+      - RABBITMQ-DEFAULT_PASS=admin
+    networks:
+      - hades
+
+networks:
+  hades:
+    driver: bridge
