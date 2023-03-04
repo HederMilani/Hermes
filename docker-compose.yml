@@ -13,6 +13,16 @@ services:
       - RABBITMQ-DEFAULT_PASS=admin
     networks:
       - hades
+  
+  hermes:
+    image: hedermilani/hermes:0.0.1-SNAPSHOT
+    container_name: hermes 
+    #restart: always
+    ports:
+      - 9999:9999
+    networks:
+      - hades
+      
 
 networks:
   hades:
