@@ -3,7 +3,7 @@ version: '0.1'
 services:
   apolo:
     image: rabbitmq:3-management
-    container_name: Apolo 
+    container_name: apolo 
     #restart: always
     ports:
       - 5672:5672
@@ -20,6 +20,35 @@ services:
     #restart: always
     ports:
       - 9999:9999
+    networks:
+      - hades
+
+  hera_database:
+    image: postgres:latest
+    container_name: hera_database
+    #restart: always
+    ports:
+      - 15432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=Hera
+    networks:
+      - hades 
+    
+  hera:
+    image: hedermilani/hera:0.0.1-SNAPSHOT
+    container_name: hera
+    restart: on-failure
+    ports:
+      - 8101:8100
+    environment:
+      - SPRING.DATASOURCE.URL=jdbc:postgresql://hera_database:5432/Hera?createDatabaseIfNotExist=true&useSSL=false
+      - SPRING.RABBITMQ.HOST=Apolo
+      - EUREKA.CLIENT.SERVICEURL.DEFAULTZONE=http://hermes:9999/eureka
+    depends_on:
+      - hera_database
+      - apolo
     networks:
       - hades
       
