@@ -37,7 +37,7 @@ services:
       - hades 
     
   hera:
-    image: hedermilani/hera:0.0.1-SNAPSHOT
+    image: hedermilani/hera:0.0.3-SNAPSHOT
     container_name: hera
     restart: on-failure
     ports:
