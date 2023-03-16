@@ -9,8 +9,8 @@ services:
       - 5672:5672
       - 15672:15672
     environment:
-      - RABBITMQ-DEFAULT_USER=admin
-      - RABBITMQ-DEFAULT_PASS=admin
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=123456
     networks:
       - hades
   
@@ -37,7 +37,7 @@ services:
       - hades 
     
   hera:
-    image: hedermilani/hera:0.0.3-SNAPSHOT
+    image: hedermilani/hera:0.0.4-SNAPSHOT
     container_name: hera
     restart: on-failure
     ports:
@@ -52,6 +52,34 @@ services:
     networks:
       - hades
       
+  hefesto_database:
+    image: postgres:latest
+    container_name: hefesto_database
+    #restart: always
+    ports:
+      - 25432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=Hefesto
+    networks:
+      - hades 
+    
+  hefesto:
+    image: hedermilani/hefesto:0.0.2-SNAPSHOT
+    container_name: hefesto
+    restart: on-failure
+    ports:
+      - 8201:8200
+    environment:
+      - SPRING.DATASOURCE.URL=jdbc:postgresql://hefesto_database:5432/Hefesto?createDatabaseIfNotExist=true&useSSL=false
+      - SPRING.RABBITMQ.HOST=Apolo
+      - EUREKA.CLIENT.SERVICEURL.DEFAULTZONE=http://hermes:9999/eureka
+    depends_on:
+      - hefesto_database
+      - apolo
+    networks:
+      - hades     
 
 networks:
   hades:
